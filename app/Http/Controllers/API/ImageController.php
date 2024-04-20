@@ -119,18 +119,27 @@ class ImageController extends Controller
             MediaTrait::delete($image->image);
 
             // Upload and save the new image
+//            if ($request->hasFile('image') && $request->file('image')->isValid()) {
+//                $newImage = MediaTrait::upload($request->file('image'), 'products');
+//                $image->update(['image' => $newImage]);
+//            }
+//
+//            return ResponseTrait::responseSuccess([], 'Image updated successfully.');
+//        } catch (\Exception $exception) {
+//            return ResponseTrait::responseError($exception->getMessage(), 'Failed to update image.');
+//        }
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
                 $newImage = MediaTrait::upload($request->file('image'), 'products');
-                $image->update(['image' => $newImage]);
+                $product->update(['image' => $newImage]);
             }
 
             return ResponseTrait::responseSuccess([], 'Image updated successfully.');
         } catch (\Exception $exception) {
-            return ResponseTrait::responseError($exception->getMessage(), 'Failed to update image.');
+            return ResponseTrait::responseError([$exception->getMessage()],"Failed to update image.");
         }
     }
 
-    public function destroy(Image $image)
+    public function destroy(Image $image): \Illuminate\Http\JsonResponse
     {
         try {
             if ($image->image) {

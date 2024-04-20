@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 Route::resource('categories',\App\Http\Controllers\API\CategoryController::class)->except('create','edit');
 Route::resource('products',\App\Http\Controllers\API\ProductController::class);
 //Route::resource('images',\App\Http\Controllers\API\ImageController::class);
@@ -44,4 +45,10 @@ Route::middleware('auth:api')->group(function(){
     Route::get('email_verification',[\App\Http\Controllers\API\User\Auth\EmailVerificationController::class,'sendEmailVerification']);
 
 });
-Route::resource('cart', CartController::class);
+Route::group(['prefix' => 'cart'], function () {
+    Route::get('/', [CartController::class, 'index']);
+    Route::post('/', [CartController::class, 'store']);
+    Route::put('/{id}', [CartController::class, 'update']);
+    Route::delete('/{id}', [CartController::class, 'destroy']);
+});
+
